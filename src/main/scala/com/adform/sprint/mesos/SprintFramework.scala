@@ -222,13 +222,18 @@ class SprintFramework(containerRunManager: ContainerRunManager)(implicit context
     val commandInfo = CommandInfo.newBuilder()
       .setEnvironment(environmentInfo)
 
-    if (containerRun.definition.args.isDefined)
+    if (containerRun.definition.cmd.isDefined) {
+      commandInfo
+        .setShell(true)
+        .setValue(containerRun.definition.cmd.get)
+    } else if (containerRun.definition.args.isDefined) {
       commandInfo
         .setShell(false)
         .addAllArguments(containerRun.definition.args.getOrElse(List.empty[String]).asJava)
-
-    if (containerRun.definition.cmd.isDefined)
-      commandInfo.setValue(containerRun.definition.cmd.get)
+    } else {
+      commandInfo
+        .setShell(false)
+    }
 
     val taskName = containerRun.definition.labels.flatMap(l => l.get("name")).getOrElse(containerRun.id.toString)
     val taskInfo = TaskInfo.newBuilder()

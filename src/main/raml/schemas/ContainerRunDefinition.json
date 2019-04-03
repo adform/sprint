@@ -5,6 +5,20 @@
   "required": [
     "container"
   ],
+  "not": {
+    "allOf": [
+      {
+        "required": [
+          "cmd"
+        ]
+      },
+      {
+        "required": [
+          "args"
+        ]
+      }
+    ]
+  },
   "properties": {
     "args": {
       "type": "array",
@@ -14,7 +28,8 @@
       }
     },
     "cmd": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1
     },
     "container": {
       "$schema": "http://json-schema.org/schema#",
