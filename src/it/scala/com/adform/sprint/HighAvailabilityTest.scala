@@ -12,7 +12,7 @@ class HighAvailabilityTest extends FlatSpec with Matchers with Eventually with I
 
   implicit override val patienceConfig = PatienceConfig(timeout = Span(60, Seconds), interval = Span(2, Seconds))
 
-  "sprint" should "should only have one leader" in withSprintInstances { (sprint1, sprint2) =>
+  "sprint" should "only have one leader" in withSprintInstances { (sprint1, sprint2) =>
     eventually {
       assert((sprint1.isLeader && !sprint2.isLeader) || (!sprint1.isLeader && sprint2.isLeader))
     }
