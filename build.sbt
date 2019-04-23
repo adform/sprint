@@ -137,6 +137,7 @@ raml := {
 fork in run := true
 cancelable in Global := true
 
+test in assembly := {}
 test in IntegrationTest := (test in IntegrationTest).dependsOn(docker).value
 
 // Prevents slf4j replay warnings during tests
