@@ -30,8 +30,9 @@ object Generators {
     image <- imageGen
     forcePull <- Gen.option(Gen.oneOf(true, false))
     parameters <- Gen.option(Gen.listOf(parameterGen))
+    networks <- Gen.option(Gen.listOf(networkGen))
     portMappings <- Gen.option(Gen.listOf(portMappingGen))
-  } yield ContainerDefinition(DockerDefinition(image, forcePull, parameters), ContainerType.Docker, portMappings)
+  } yield ContainerDefinition(DockerDefinition(image, forcePull, parameters), ContainerType.Docker,networks,  portMappings)
 
   val kvGen: Gen[(String, String)] = for {
     key <- Gen.listOfN(Gen.chooseNum(3, 10).sample.get, Gen.alphaChar).map(_.mkString)
@@ -41,7 +42,7 @@ object Generators {
   val portRangeListGen: Gen[List[PortRange]] = for {
     rangeLimits <- Gen.listOf(Gen.chooseNum(0, 65534))
     rangeLimitsSorted = rangeLimits.toSet.toList.sorted
-    ranges = rangeLimitsSorted.zip(rangeLimitsSorted.drop(1)).map{ case (start, end) => PortRange(start, end) }
+    ranges = rangeLimitsSorted.zip(rangeLimitsSorted.drop(1)).map { case (start, end) => PortRange(start, end) }
   } yield ranges
 
   val resourceGen: Gen[Resources] = for {
@@ -59,9 +60,15 @@ object Generators {
   } yield constraint(field, arg)
 
   val networkGen: Gen[Network] = for {
+    name <- Gen.alphaStr
+    portMappings <- Gen.option(Gen.listOf(portMappingGen))
+    labels <- Gen.option(Gen.mapOf(kvGen))
+  } yield Network(name, portMappings, labels)
+
+  val hostNetworkGen: Gen[HostNetwork] = for {
     hostname <- Gen.alphaStr
     portMappings <- Gen.option(Gen.listOf(portMappingGen))
-  } yield Network(hostname, portMappings)
+  } yield HostNetwork(hostname, portMappings)
 
   val containerRunDefinitionGen: Gen[ContainerRunDefinition] = for {
     cmd <- Gen.option(Gen.alphaStr)
@@ -83,7 +90,7 @@ object Generators {
     time = new DateTime(millis)
     state <- Gen.oneOf(Seq(ContainerRunState.Finished, ContainerRunState.Failed, ContainerRunState.Running))
     definition <- arbitrary[ContainerRunDefinition]
-    network <- Gen.option(networkGen)
+    network <- Gen.option(hostNetworkGen)
   } yield ContainerRun(id, state, time, definition, network)
 
   implicit lazy val arbContainerRun: Arbitrary[ContainerRun] = Arbitrary(containerRunGen)

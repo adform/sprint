@@ -77,7 +77,7 @@ See the [JSON schema](src/main/raml/schemas/ContainerRunDefinition.json) for det
 
 ## Features
 
-Only `BRIDGE` networking mode is supported, port mappings are defined similarly to [Marathon 1.5](https://mesosphere.github.io/marathon/docs/networking.html#container-and-containerbridge-mode).
+Networking and port mappings are defined similarly to [Marathon 1.5](https://mesosphere.github.io/marathon/docs/networking.html).
 
 High availability is supported by simply scaling sprint to more instances, one of them will be elected master and all follower instances will simply proxy their requests to the master.
 

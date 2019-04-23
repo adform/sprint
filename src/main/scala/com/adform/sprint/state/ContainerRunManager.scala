@@ -21,7 +21,7 @@ trait ContainerRunManager {
   def deleteContainerRun(id: UUID): Future[Option[UUID]]
   def getContainerRun(id: UUID): Future[Option[ContainerRun]]
   def updateContainerRunState(id: UUID, state: ContainerRunState): Future[Option[ContainerRun]]
-  def updateContainerRunStateAndNetworking(id: UUID, state: ContainerRunState, network: Network): Future[Option[ContainerRun]]
+  def updateContainerRunStateAndNetworking(id: UUID, state: ContainerRunState, network: HostNetwork): Future[Option[ContainerRun]]
   def listContainerRuns(filter: ContainerRun => Boolean): Future[Seq[ContainerRun]]
 }
 
@@ -40,7 +40,7 @@ class StupidContainerRunManager(store: ContainerRunStore)(implicit context: Exec
     store.updateContainerRun(id, _.copy(state = state, lastModified = DateTime.now))
   }
 
-  override def updateContainerRunStateAndNetworking(id: UUID, state: ContainerRunState, network: Network): Future[Option[ContainerRun]] = {
+  override def updateContainerRunStateAndNetworking(id: UUID, state: ContainerRunState, network: HostNetwork): Future[Option[ContainerRun]] = {
     store.updateContainerRun(id, _.copy(state = state, network = Some(network), lastModified = DateTime.now))
   }
 

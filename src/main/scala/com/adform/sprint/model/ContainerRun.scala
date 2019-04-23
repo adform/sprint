@@ -20,9 +20,10 @@ object ContainerType {
   case object Mesos extends ContainerType
 }
 
-case class PortMapping(containerPort: Int, hostPort: Option[Int], name: Option[String])
+case class PortMapping(containerPort: Int, hostPort: Option[Int], name: Option[String], protocol: String = "tcp")
 
-case class ContainerDefinition(docker: DockerDefinition, `type`: ContainerType, portMappings: Option[List[PortMapping]])
+case class ContainerDefinition(docker: DockerDefinition, `type`: ContainerType, networks: Option[List[Network]],
+                               portMappings: Option[List[PortMapping]])
 case class DockerDefinition(image: String, forcePullImage: Option[Boolean], parameters: Option[List[Parameter]])
 
 case class ContainerRunDefinition(
@@ -36,14 +37,15 @@ case class ContainerRunDefinition(
   constraints: Option[List[Constraint]]
 )
 
-case class Network(host: String, portMappings: Option[List[PortMapping]])
+case class Network(name: String, portMappings: Option[List[PortMapping]], labels: Option[Map[String, String]])
+case class HostNetwork(host: String, portMappings: Option[List[PortMapping]])
 
 case class ContainerRun(
    id: UUID,
    state: ContainerRunState,
    lastModified: DateTime,
    definition: ContainerRunDefinition,
-   network: Option[Network]
+   network: Option[HostNetwork]
 )
 case class ContainerRunList(runs: List[ContainerRun])
 

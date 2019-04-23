@@ -12,7 +12,7 @@ import org.scalatest.time.{Seconds, Span}
 class EnvVariableTest extends FlatSpec with Matchers with Eventually with IntegrationPatience
   with fixtures.Docker with fixtures.Mesos with fixtures.SprintBuilder {
 
-  implicit override val patienceConfig = PatienceConfig(timeout = Span(60, Seconds), interval = Span(2, Seconds))
+  implicit override val patienceConfig : PatienceConfig = PatienceConfig(timeout = Span(60, Seconds), interval = Span(2, Seconds))
 
   "sprint" should "set environmental variables for labels and HOST" in withSprintInstance { sprint =>
 

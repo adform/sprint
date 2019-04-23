@@ -22,7 +22,8 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "docker", "type"
+        "docker",
+        "type"
       ],
       "properties": {
         "docker": {
@@ -41,7 +42,9 @@
             },
             "parameters": {
               "type": "array",
-              "required": [ "key" ],
+              "required": [
+                "key"
+              ],
               "items": {
                 "type": "object",
                 "additionalProperties": false,
@@ -60,7 +63,54 @@
         },
         "type": {
           "type": "string",
-          "enum": ["DOCKER","MESOS"]
+          "enum": [
+            "DOCKER",
+            "MESOS"
+          ]
+        },
+        "networks": {
+          "type": "array",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "portMappings": {
+              "type": "array",
+              "properties": {
+                "containerPort": {
+                  "type": "number"
+                },
+                "hostPort": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "protocol": {
+                  "type": "string",
+                  "enum": [
+                    "tcp",
+                    "udp"
+                  ]
+                }
+              },
+              "required": [
+                "containerPort"
+              ]
+            },
+            "labels": {
+              "type": "object",
+              "patternProperties": {
+                ".*": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": [
+            "name"
+          ]
         },
         "portMappings": {
           "type": "array",
@@ -73,6 +123,13 @@
             },
             "name": {
               "type": "string"
+            },
+            "protocol": {
+              "type": "string",
+              "enum": [
+                "tcp",
+                "udp"
+              ]
             }
           },
           "required": [
@@ -117,7 +174,10 @@
           },
           {
             "type": "string",
-            "enum": ["LIKE", "UNLIKE"]
+            "enum": [
+              "LIKE",
+              "UNLIKE"
+            ]
           },
           {
             "type": "string"
